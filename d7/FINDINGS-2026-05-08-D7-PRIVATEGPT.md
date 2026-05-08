@@ -19,15 +19,15 @@ Fork and branch are prepared for D7 Wash Empire car wash land sniper grounding, 
 - Added a D7-specific source-match retriever route and tests to fail empty on unsupported parcel IDs.
 - Added offline contract verifier for exact MCP node, prompt, endpoint, collection, and source manifest.
 - Added offline contract report at `d7/reports/d7_privategpt_contract_report.json`.
-- Added ARM Surface preflight checker for Python 3.11, Poetry, BitNet, PrivateGPT, ports, and ingest folder.
+- Added ARM Surface preflight checker for Python 3.11, dependency manager, BitNet, PrivateGPT, ports, and ingest folder.
 
 ## Not Live Yet
 
 This machine cannot honestly confirm live service or loaded collection yet:
 
 - `C:\wash-empire\privategpt-ingest` was not present.
-- No Python 3.11 runtime was installed; upstream PrivateGPT requires `>=3.11,<3.12`.
-- Poetry was not installed.
+- Python 3.11 was installed into an ignored `.venv` using `uv`; the global Windows `py -3.11` launcher still does not see a system-wide 3.11 install.
+- Poetry was not installed, but `uv` is available and was used successfully for the local test environment.
 - No local Microsoft BitNet checkout/server was present.
 - No listener was active on ports `8000`, `8001`, or `8080`; only Ollama was listening on `11434`.
 
@@ -36,16 +36,16 @@ This machine cannot honestly confirm live service or loaded collection yet:
 - Python compile check passed for all changed Python files.
 - `git diff --check` passed with no whitespace errors.
 - Offline contract verifier passed: exact MCP node, prompt, port, collection, BitNet base, Qdrant collection wiring, fabricated-id EMPTY guard, and source manifest.
-- Script-only pytest passed: `2 passed`.
+- Script-only pytest passed before dependency install: `2 passed`.
 - D7 ingest runner returned `MISSING_INGEST_DIR` for `C:\wash-empire\privategpt-ingest`.
 - D7 sample Census smoke returned `SUBSTRATE_ERROR` because `http://127.0.0.1:8000/v1/chat/completions` is not listening.
-- Surface preflight report documents the same live-runtime blockers at `d7/reports/d7_surface_preflight_report.json`.
-- Focused pytest could not start because upstream PrivateGPT dependencies are not installed locally: `ModuleNotFoundError: No module named 'injector'`.
+- Surface preflight report documents remaining live-runtime blockers at `d7/reports/d7_surface_preflight_report.json`.
+- Focused D7 pytest passed in the installed Python 3.11 `uv` environment: `5 passed`.
 
 ## Required Morning Actions
 
 1. Put the prepared D7 grounding files in `C:\wash-empire\privategpt-ingest`.
-2. Install Python 3.11 and Poetry on the ARM Surface.
+2. Install Python 3.11 and dependencies with `uv` or Poetry on the ARM Surface.
 3. Build/run Microsoft BitNet so its OpenAI-compatible server listens at `http://127.0.0.1:8080/v1`.
 4. Start PrivateGPT with `settings-d7-bitnet.yaml` and `PORT=8000`.
 5. Run `scripts\d7_ingest_govt_api_grounding.py`.

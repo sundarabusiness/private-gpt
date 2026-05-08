@@ -1,5 +1,5 @@
 {
-  "checked_at": "2026-05-08T10:44:17.760098+00:00",
+  "checked_at": "2026-05-08T10:58:17.180698+00:00",
   "scope": "D7 Wash Empire car wash land sniper only",
   "bitnet_base": "http://127.0.0.1:8080/v1",
   "privategpt_base": "http://127.0.0.1:8000",
@@ -7,13 +7,13 @@
   "checks": [
     {
       "name": "python_3_11",
-      "passed": false,
-      "detail": "No suitable Python runtime found\nPass --list (-0) to see all detected environments on your machine\nor set environment variable PYLAUNCHER_ALLOW_INSTALL to use winget\nor open the Microsoft Store to the requested version."
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\.venv\\Scripts\\python.exe 3.11.15"
     },
     {
-      "name": "poetry",
-      "passed": false,
-      "detail": "[WinError 2] The system cannot find the file specified"
+      "name": "dependency_manager",
+      "passed": true,
+      "detail": "poetry=[WinError 2] The system cannot find the file specified; uv=uv 0.10.10 (8c730aaad 2026-03-13)"
     },
     {
       "name": "bitnet_openai_models",

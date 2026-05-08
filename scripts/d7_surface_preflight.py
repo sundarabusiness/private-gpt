@@ -60,11 +60,27 @@ def preflight(
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
 
-    ok, detail = _run(["py", "-3.11", "-c", "import sys; print(sys.version)"])
-    checks.append(_check("python_3_11", ok, detail))
+    if sys.version_info[:2] == (3, 11):
+        checks.append(
+            _check(
+                "python_3_11",
+                True,
+                f"{sys.executable} {sys.version.split()[0]}",
+            )
+        )
+    else:
+        ok, detail = _run(["py", "-3.11", "-c", "import sys; print(sys.version)"])
+        checks.append(_check("python_3_11", ok, detail))
 
-    ok, detail = _run(["poetry", "--version"])
-    checks.append(_check("poetry", ok, detail))
+    poetry_ok, poetry_detail = _run(["poetry", "--version"])
+    uv_ok, uv_detail = _run(["uv", "--version"])
+    checks.append(
+        _check(
+            "dependency_manager",
+            poetry_ok or uv_ok,
+            f"poetry={poetry_detail or 'missing'}; uv={uv_detail or 'missing'}",
+        )
+    )
 
     bitnet_models = bitnet_base.rstrip("/") + "/models"
     ok, detail = _http_ok(bitnet_models)
@@ -127,4 +143,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

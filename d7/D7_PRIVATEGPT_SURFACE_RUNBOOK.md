@@ -30,18 +30,29 @@ The expected BitNet server shape is OpenAI-compatible. PrivateGPT then exposes t
 
 ## PrivateGPT Setup
 
-Use a Python runtime compatible with upstream PrivateGPT (`>=3.11,<3.12`) and Poetry.
+Use a Python runtime compatible with upstream PrivateGPT (`>=3.11,<3.12`). `uv` is the fastest proven setup path on this PC; Poetry remains compatible with upstream docs.
+
+Fast `uv` path:
+
+```powershell
+cd C:\tmp\private-gpt
+uv python install 3.11
+uv venv --python 3.11 .venv
+uv pip install -e ".[llms-openai-like,embeddings-huggingface,vector-stores-qdrant]" pytest
+```
 
 Run the preflight first:
 
 ```powershell
 cd C:\tmp\private-gpt
-py -3.12 scripts\d7_surface_preflight.py
+.venv\Scripts\python.exe scripts\d7_surface_preflight.py
 ```
 
 The report is written to:
 
 `d7\reports\d7_surface_preflight_report.json`
+
+Poetry path:
 
 ```powershell
 cd C:\tmp\private-gpt
@@ -49,6 +60,15 @@ poetry install --extras "llms-openai-like embeddings-huggingface vector-stores-q
 $env:PGPT_PROFILES="d7-bitnet"
 $env:PORT="8000"
 poetry run python -m private_gpt
+```
+
+`uv` start path:
+
+```powershell
+cd C:\tmp\private-gpt
+$env:PGPT_PROFILES="d7-bitnet"
+$env:PORT="8000"
+.venv\Scripts\python.exe -m private_gpt
 ```
 
 ## Ingest
