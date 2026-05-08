@@ -1,5 +1,8 @@
 # D7 Wash Empire PrivateGPT profile.
 # Purpose: govt-api-grounding collection for car wash land sniper grounding only.
+# Path B substitution: Ollama Gemma is the local grounding LLM until the full
+# Microsoft BitNet backend is deployed. This follows the v2 plan Phase 9 risk
+# table: BitNet unavailable -> local Ollama small-model substitute.
 
 server:
   env_name: ${APP_ENV:d7-bitnet}
@@ -35,15 +38,15 @@ ui:
   delete_all_files_button_enabled: false
 
 llm:
-  mode: openailike
+  mode: ollama
   prompt_style: "llama3"
   max_new_tokens: 1024
   context_window: 4096
-  tokenizer: microsoft/BitNet-b1.58-2B-4T
+  tokenizer: google/gemma-2b-it
   temperature: 0.0
 
 embedding:
-  mode: huggingface
+  mode: ollama
   ingest_mode: simple
   embed_dim: 768
 
@@ -53,15 +56,29 @@ huggingface:
   trust_remote_code: true
 
 openai:
-  # BitNet.cpp builds llama-server; run it on 127.0.0.1:8080 and expose its
-  # OpenAI-compatible /v1 API here.
-  api_base: ${BITNET_OPENAI_BASE:http://127.0.0.1:8080/v1}
-  api_key: ${BITNET_OPENAI_API_KEY:EMPTY}
-  model: ${BITNET_MODEL:bitnet}
+  # Legacy OpenAI-like settings are kept for compatibility checks. The active
+  # Path B runtime below uses the `ollama` section.
+  api_base: ${OLLAMA_OPENAI_BASE:http://127.0.0.1:11434/v1}
+  api_key: ${OLLAMA_OPENAI_API_KEY:EMPTY}
+  model: ${OLLAMA_MODEL:gemma3:4b}
   request_timeout: 600.0
-  embedding_api_base: ${BITNET_OPENAI_BASE:http://127.0.0.1:8080/v1}
-  embedding_api_key: ${BITNET_OPENAI_API_KEY:EMPTY}
-  embedding_model: ${BITNET_EMBEDDING_MODEL:nomic-ai/nomic-embed-text-v1.5}
+  embedding_api_base: ${OLLAMA_OPENAI_BASE:http://127.0.0.1:11434/v1}
+  embedding_api_key: ${OLLAMA_OPENAI_API_KEY:EMPTY}
+  embedding_model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text:latest}
+
+ollama:
+  api_base: ${OLLAMA_BASE:http://127.0.0.1:11434}
+  embedding_api_base: ${OLLAMA_BASE:http://127.0.0.1:11434}
+  llm_model: ${OLLAMA_MODEL:gemma3:4b}
+  embedding_model: ${OLLAMA_EMBEDDING_MODEL:nomic-embed-text:latest}
+  keep_alive: 5m
+  tfs_z: 1.0
+  top_k: 40
+  top_p: 0.9
+  repeat_last_n: 64
+  repeat_penalty: 1.1
+  request_timeout: 600.0
+  autopull_models: false
 
 vectorstore:
   database: qdrant

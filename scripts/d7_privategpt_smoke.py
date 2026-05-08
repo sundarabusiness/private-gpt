@@ -47,6 +47,8 @@ def main() -> int:
         "model": "private-gpt",
         "temperature": 0.0,
         "max_tokens": 1024,
+        "use_context": True,
+        "include_sources": True,
         "messages": [
             {"role": "system", "content": SYSTEM_PROMPT},
             {"role": "user", "content": build_user_message(payload)},

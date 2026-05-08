@@ -57,7 +57,16 @@ def verify(root: Path) -> dict[str, Any]:
     settings = settings_path.read_text(encoding="utf-8")
     checks.append(_result("privategpt_port_8000", "port: ${PORT:8000}" in settings, str(settings_path)))
     checks.append(_result("collection_name", "collection_name: govt-api-grounding" in settings, str(settings_path)))
-    checks.append(_result("bitnet_openai_base", "BITNET_OPENAI_BASE:http://127.0.0.1:8080/v1" in settings, str(settings_path)))
+    checks.append(
+        _result(
+            "ollama_gemma_substitute",
+            "mode: ollama" in settings
+            and "OLLAMA_BASE:http://127.0.0.1:11434" in settings
+            and "OLLAMA_MODEL:gemma3:4b" in settings
+            and "nomic-embed-text:latest" in settings,
+            str(settings_path),
+        )
+    )
 
     retriever_client_path = root / "scripts" / "d7_privategpt_retriever.py"
     retriever_client = retriever_client_path.read_text(encoding="utf-8")

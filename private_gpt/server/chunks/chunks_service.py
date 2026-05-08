@@ -1,8 +1,10 @@
-from typing import TYPE_CHECKING, Literal
+import re
+from itertools import chain
+from typing import TYPE_CHECKING, Any, Literal
 
 from injector import inject, singleton
 from llama_index.core.indices import VectorStoreIndex
-from llama_index.core.schema import NodeWithScore
+from llama_index.core.schema import BaseNode, NodeWithScore
 from llama_index.core.storage import StorageContext
 from pydantic import BaseModel, Field
 
@@ -17,6 +19,26 @@ from private_gpt.server.ingest.model import IngestedDoc
 
 if TYPE_CHECKING:
     from llama_index.core.schema import RelatedNodeInfo
+
+
+FIELD_TOKEN_RE = re.compile(r"\b(?:[A-Z]\d{5}_\d{3}[A-Z]|AADT)\b")
+
+
+def _flatten_metadata(value: Any) -> list[str]:
+    if value is None:
+        return []
+    if isinstance(value, dict):
+        flattened: list[str] = []
+        for key, item in value.items():
+            flattened.append(str(key))
+            flattened.extend(_flatten_metadata(item))
+        return flattened
+    if isinstance(value, list):
+        flattened = []
+        for item in value:
+            flattened.extend(_flatten_metadata(item))
+        return flattened
+    return [str(value)]
 
 
 class Chunk(BaseModel):
@@ -114,12 +136,129 @@ class ChunksService:
         nodes.sort(key=lambda n: n.score or 0.0, reverse=True)
 
         retrieved_nodes = []
+        retrieved_nodes.extend(
+            self._retrieve_exact_chunks_from_query(text, context_filter, limit)
+        )
         for node in nodes:
             chunk = Chunk.from_node(node)
             chunk.previous_texts = self._get_sibling_nodes_text(
                 node, prev_next_chunks, False
             )
             chunk.next_texts = self._get_sibling_nodes_text(node, prev_next_chunks)
+            if _chunk_identity(chunk) in {_chunk_identity(item) for item in retrieved_nodes}:
+                continue
             retrieved_nodes.append(chunk)
+            if len(retrieved_nodes) >= limit:
+                break
 
         return retrieved_nodes
+
+    def _retrieve_exact_chunks_from_query(
+        self,
+        text: str,
+        context_filter: ContextFilter | None,
+        limit: int,
+    ) -> list[Chunk]:
+        terms = _extract_field_terms(text)
+        exact_chunks: list[Chunk] = []
+        seen: set[tuple[str, str]] = set()
+        for term in terms:
+            for chunk in self.retrieve_by_required_terms([term], context_filter, limit):
+                identity = _chunk_identity(chunk)
+                if identity in seen:
+                    continue
+                exact_chunks.append(chunk)
+                seen.add(identity)
+                if len(exact_chunks) >= limit:
+                    return exact_chunks
+        return exact_chunks
+
+    def retrieve_by_required_terms(
+        self,
+        terms: list[str],
+        context_filter: ContextFilter | None = None,
+        limit: int = 10,
+        min_score: float | None = None,
+    ) -> list[Chunk]:
+        """Return exact source matches when vector recall misses field-name tokens."""
+        normalized_terms = [term.strip() for term in terms if term.strip()]
+        if not normalized_terms:
+            return []
+
+        ref_docs = self.storage_context.docstore.get_all_ref_doc_info()
+        if not ref_docs:
+            return []
+
+        if context_filter is not None and context_filter.docs_ids is not None:
+            ref_docs = {
+                doc_id: ref_doc
+                for doc_id, ref_doc in ref_docs.items()
+                if doc_id in context_filter.docs_ids
+            }
+
+        node_ids = list(chain.from_iterable(ref_doc.node_ids for ref_doc in ref_docs.values()))
+        nodes = self.storage_context.docstore.get_nodes(node_ids=list(node_ids))
+        scored_nodes: list[NodeWithScore] = []
+        seen_node_ids: set[str] = set()
+
+        for node in nodes:
+            if node.node_id in seen_node_ids:
+                continue
+            if not _node_matches_all_terms(node, normalized_terms):
+                continue
+
+            score = _node_exact_score(node, normalized_terms)
+            if min_score is not None and score < min_score:
+                continue
+
+            scored_nodes.append(NodeWithScore(node=node, score=score))
+            seen_node_ids.add(node.node_id)
+
+        scored_nodes.sort(key=lambda item: item.score or 0.0, reverse=True)
+        return [Chunk.from_node(node) for node in scored_nodes[:limit]]
+
+
+def _node_matches_all_terms(node: BaseNode, terms: list[str]) -> bool:
+    metadata = node.metadata or {}
+    parts = [
+        node.get_content(),
+        node.node_id,
+        node.ref_doc_id,
+        *_flatten_metadata(metadata),
+    ]
+    source_text = "\n".join(part for part in parts if part).casefold()
+    return all(term.casefold() in source_text for term in terms)
+
+
+def _node_exact_score(node: BaseNode, terms: list[str]) -> float:
+    metadata = node.metadata or {}
+    file_name = str(metadata.get("file_name") or "").casefold()
+    content = node.get_content().casefold()
+    score = 1.0
+
+    for term in terms:
+        normalized = term.casefold()
+        if normalized in file_name:
+            score += 4.0
+        if normalized in content:
+            score += 1.0
+
+    if file_name.startswith("census-acs5-") or file_name.startswith("fhwa-hpms-"):
+        score += 3.0
+    if file_name == "d7-grounding-source-index.md":
+        score += 2.0
+
+    return score
+
+
+def _extract_field_terms(text: str) -> list[str]:
+    terms: list[str] = []
+    for match in FIELD_TOKEN_RE.finditer(text):
+        term = match.group(0)
+        if term not in terms:
+            terms.append(term)
+    return terms
+
+
+def _chunk_identity(chunk: Chunk) -> tuple[str, str]:
+    return (chunk.document.doc_id, chunk.text)

@@ -1,3 +1,4 @@
+from datetime import date
 from typing import Any, Literal
 
 from fastapi import APIRouter, Depends, Request
@@ -34,6 +35,8 @@ class D7RetrieverResponse(BaseModel):
     parcel_id: str | None
     required_terms: list[str]
     empty_reason: str | None = None
+    grounded_excerpts: list[str]
+    citations: list[dict[str, str]]
     data: list[D7RetrievedChunk]
 
 
@@ -81,6 +84,58 @@ def _matched_terms(chunk: Chunk, terms: list[str]) -> list[str]:
     return [term for term in terms if term.casefold() in source_text]
 
 
+def _append_source_matches(
+    results: list[D7RetrievedChunk],
+    chunks: list[Chunk],
+    terms: list[str],
+    *,
+    require_source_match: bool,
+    min_score: float | None,
+) -> None:
+    for chunk in chunks:
+        if min_score is not None and chunk.score < min_score:
+            continue
+
+        matched = _matched_terms(chunk, terms)
+        if require_source_match and terms and len(matched) != len(terms):
+            continue
+
+        results.append(
+            D7RetrievedChunk(
+                object="d7.privategpt_retriever.chunk",
+                matched_terms=matched,
+                chunk=chunk,
+            )
+        )
+
+
+def _grounded_excerpts(results: list[D7RetrievedChunk]) -> list[str]:
+    return [result.chunk.text for result in results]
+
+
+def _citations(results: list[D7RetrievedChunk]) -> list[dict[str, str]]:
+    pulled = date.today().isoformat()
+    citations: list[dict[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for result in results:
+        metadata = result.chunk.document.doc_metadata or {}
+        source_document = str(metadata.get("file_name") or result.chunk.document.doc_id)
+        for field in result.matched_terms:
+            key = (field, source_document)
+            if key in seen:
+                continue
+            citations.append(
+                {
+                    "source": "PrivateGPT",
+                    "field": field,
+                    "source_document": source_document,
+                    "pulled": pulled,
+                }
+            )
+            seen.add(key)
+    return citations
+
+
 @d7_retriever_router.post(
     "/d7/privategpt_retriever",
     tags=["D7 PrivateGPT Retriever"],
@@ -99,20 +154,26 @@ def d7_privategpt_retriever(
     )
 
     results: list[D7RetrievedChunk] = []
-    for chunk in chunks:
-        if body.min_score is not None and chunk.score < body.min_score:
-            continue
-
-        matched = _matched_terms(chunk, terms)
-        if body.require_source_match and terms and len(matched) != len(terms):
-            continue
-
-        results.append(
-            D7RetrievedChunk(
-                object="d7.privategpt_retriever.chunk",
-                matched_terms=matched,
-                chunk=chunk,
-            )
+    _append_source_matches(
+        results,
+        chunks,
+        terms,
+        require_source_match=body.require_source_match,
+        min_score=body.min_score,
+    )
+    if not results and body.require_source_match and terms:
+        exact_chunks = service.retrieve_by_required_terms(
+            terms,
+            body.context_filter,
+            body.limit,
+            body.min_score,
+        )
+        _append_source_matches(
+            results,
+            exact_chunks,
+            terms,
+            require_source_match=body.require_source_match,
+            min_score=body.min_score,
         )
 
     empty_reason = None
@@ -126,6 +187,8 @@ def d7_privategpt_retriever(
         parcel_id=body.parcel_id,
         required_terms=terms,
         empty_reason=empty_reason,
+        grounded_excerpts=_grounded_excerpts(results),
+        citations=_citations(results),
         data=results,
     )
 

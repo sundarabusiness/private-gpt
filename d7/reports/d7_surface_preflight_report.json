@@ -1,14 +1,16 @@
 {
-  "checked_at": "2026-05-08T21:30:32.890703+00:00",
+  "checked_at": "2026-05-08T23:23:02.675470+00:00",
   "scope": "D7 Wash Empire car wash land sniper only",
+  "active_llm_backend": "ollama_gemma_substitute",
   "bitnet_base": "http://127.0.0.1:8080/v1",
+  "ollama_base": "http://127.0.0.1:11434",
   "privategpt_base": "http://127.0.0.1:8000",
   "ingest_dir": "C:\\wash-empire\\privategpt-ingest",
   "checks": [
     {
       "name": "python_3_11",
       "passed": true,
-      "detail": "C:\\tmp\\private-gpt\\.venv\\Scripts\\python.exe 3.11.15"
+      "detail": "C:\\private-gpt-d7\\.venv\\Scripts\\python.exe 3.11.15"
     },
     {
       "name": "dependency_manager",
@@ -16,30 +18,30 @@
       "detail": "poetry=[WinError 2] The system cannot find the file specified; uv=uv 0.10.10 (8c730aaad 2026-03-13)"
     },
     {
-      "name": "bitnet_openai_models",
-      "passed": false,
-      "detail": "http://127.0.0.1:8080/v1/models -> <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+      "name": "ollama_models",
+      "passed": true,
+      "detail": "http://127.0.0.1:11434/api/tags -> 200: {\"models\":[{\"name\":\"gemma3:4b\",\"model\":\"gemma3:4b\",\"modified_at\":\"2026-05-08T04:32:56.4029068-06:00\",\"size\":3338801804,\"digest\":\"a2af6cc3eb7fa8be8504abaf9b04e88f17a119ec3f04a3addf55f92841195f5a\",\"deta"
     },
     {
       "name": "privategpt_health",
-      "passed": false,
-      "detail": "http://127.0.0.1:8000/health -> <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+      "passed": true,
+      "detail": "http://127.0.0.1:8000/health -> 200: {\"status\":\"ok\"}"
     },
     {
-      "name": "port_8080_open",
-      "passed": false,
-      "detail": "BitNet server"
+      "name": "port_11434_open",
+      "passed": true,
+      "detail": "Ollama Gemma substitute"
     },
     {
       "name": "port_8000_open",
-      "passed": false,
+      "passed": true,
       "detail": "PrivateGPT server"
     },
     {
       "name": "ingest_dir",
-      "passed": false,
-      "detail": "C:\\wash-empire\\privategpt-ingest does not exist"
+      "passed": true,
+      "detail": "C:\\wash-empire\\privategpt-ingest exists with 23 non-env files"
     }
   ],
-  "passed": false
+  "passed": true
 }

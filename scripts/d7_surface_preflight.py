@@ -56,6 +56,7 @@ def _http_ok(url: str) -> tuple[bool, str]:
 def preflight(
     ingest_dir: Path,
     bitnet_base: str,
+    ollama_base: str,
     privategpt_base: str,
 ) -> dict[str, Any]:
     checks: list[dict[str, Any]] = []
@@ -82,15 +83,21 @@ def preflight(
         )
     )
 
-    bitnet_models = bitnet_base.rstrip("/") + "/models"
-    ok, detail = _http_ok(bitnet_models)
-    checks.append(_check("bitnet_openai_models", ok, f"{bitnet_models} -> {detail}"))
+    ollama_models = ollama_base.rstrip("/") + "/api/tags"
+    ok, detail = _http_ok(ollama_models)
+    checks.append(_check("ollama_models", ok, f"{ollama_models} -> {detail}"))
 
     pg_health = privategpt_base.rstrip("/") + "/health"
     ok, detail = _http_ok(pg_health)
     checks.append(_check("privategpt_health", ok, f"{pg_health} -> {detail}"))
 
-    checks.append(_check("port_8080_open", _tcp_open("127.0.0.1", 8080), "BitNet server"))
+    checks.append(
+        _check(
+            "port_11434_open",
+            _tcp_open("127.0.0.1", 11434),
+            "Ollama Gemma substitute",
+        )
+    )
     checks.append(_check("port_8000_open", _tcp_open("127.0.0.1", 8000), "PrivateGPT server"))
 
     if ingest_dir.exists():
@@ -113,7 +120,9 @@ def preflight(
     report = {
         "checked_at": datetime.now(timezone.utc).isoformat(),
         "scope": "D7 Wash Empire car wash land sniper only",
+        "active_llm_backend": "ollama_gemma_substitute",
         "bitnet_base": bitnet_base,
+        "ollama_base": ollama_base,
         "privategpt_base": privategpt_base,
         "ingest_dir": str(ingest_dir),
         "checks": checks,
@@ -126,6 +135,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--ingest-dir", type=Path, default=Path("C:/wash-empire/privategpt-ingest"))
     parser.add_argument("--bitnet-base", default="http://127.0.0.1:8080/v1")
+    parser.add_argument("--ollama-base", default="http://127.0.0.1:11434")
     parser.add_argument("--privategpt-base", default="http://127.0.0.1:8000")
     parser.add_argument(
         "--report-out",
@@ -134,7 +144,12 @@ def main() -> int:
     )
     args = parser.parse_args()
 
-    report = preflight(args.ingest_dir, args.bitnet_base, args.privategpt_base)
+    report = preflight(
+        args.ingest_dir,
+        args.bitnet_base,
+        args.ollama_base,
+        args.privategpt_base,
+    )
     args.report_out.parent.mkdir(parents=True, exist_ok=True)
     args.report_out.write_text(json.dumps(report, indent=2), encoding="utf-8")
     print(json.dumps(report, indent=2))

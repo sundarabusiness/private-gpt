@@ -139,7 +139,7 @@ class SimpleIngestComponent(BaseIngestComponentWithIndex):
         logger.debug("Transforming count=%s documents into nodes", len(documents))
         with self._index_thread_lock:
             for document in documents:
-                self._index.insert(document, show_progress=True)
+                self._index.insert(document)
             logger.debug("Persisting the index and nodes")
             # persist the index and nodes
             self._save_index()

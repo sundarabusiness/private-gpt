@@ -1,11 +1,81 @@
 {
-  "checked_at": "2026-05-08T11:09:42.265596+00:00",
+  "checked_at": "2026-05-08T23:10:41.162813+00:00",
   "scope": "D7 Wash Empire car wash land sniper only",
   "base_url": "http://127.0.0.1:8000",
-  "status": "SUBSTRATE_ERROR",
   "required_pass_rate": 0.9,
-  "pass_rate": null,
+  "pass_rate": 1.0,
   "probe_count": 10,
-  "passed": false,
-  "error": "PrivateGPT substrate unavailable at http://127.0.0.1:8000/v1/d7/privategpt_retriever: HTTPConnectionPool(host='127.0.0.1', port=8000): Max retries exceeded with url: /v1/d7/privategpt_retriever (Caused by NewConnectionError(\"HTTPConnection(host='127.0.0.1', port=8000): Failed to establish a new connection: [WinError 10061] No connection could be made because the target machine actively refused it\"))"
+  "passed": true,
+  "results": [
+    {
+      "name": "fabricated_census_field",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_hpms_field",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_google_places_field",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_overpass_tag",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_parcel_frontage",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_buyer_quote",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_vic_keller_log",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_threshold",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_acs_suffix",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_error_case",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    }
+  ]
 }

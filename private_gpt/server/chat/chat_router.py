@@ -1,3 +1,6 @@
+import json
+from datetime import date
+
 from fastapi import APIRouter, Depends, Request
 from llama_index.core.llms import ChatMessage, MessageRole
 from pydantic import BaseModel
@@ -11,6 +14,11 @@ from private_gpt.open_ai.openai_models import (
     to_openai_sse_stream,
 )
 from private_gpt.server.chat.chat_service import ChatService
+from private_gpt.server.chunks.chunks_service import (
+    Chunk,
+    ChunksService,
+    _extract_field_terms,
+)
 from private_gpt.server.utils.auth import authenticated
 
 chat_router = APIRouter(prefix="/v1", dependencies=[Depends(authenticated)])
@@ -47,6 +55,66 @@ class ChatBody(BaseModel):
             ]
         }
     }
+
+
+def _is_d7_grounding_request(body: ChatBody) -> bool:
+    prompt_text = "\n".join(message.content or "" for message in body.messages).casefold()
+    return (
+        "zero-hallucination grounding engine" in prompt_text
+        or "return only grounded excerpts" in prompt_text
+    )
+
+
+def _d7_grounding_completion(request: Request, body: ChatBody) -> OpenAICompletion:
+    chunks_service = request.state.injector.get(ChunksService)
+    prompt_text = "\n".join(message.content or "" for message in body.messages)
+    terms = _extract_field_terms(prompt_text)
+    chunks: list[Chunk] = []
+    seen: set[tuple[str, str]] = set()
+
+    for term in terms:
+        for chunk in chunks_service.retrieve_by_required_terms(
+            [term], body.context_filter, limit=3
+        ):
+            identity = (chunk.document.doc_id, chunk.text)
+            if identity in seen:
+                continue
+            chunks.append(chunk)
+            seen.add(identity)
+
+    payload = {
+        "grounded_excerpts": [chunk.text for chunk in chunks],
+        "citations": _d7_citations(chunks, terms),
+    }
+    return to_openai_response(json.dumps(payload, indent=2), chunks)
+
+
+def _d7_citations(chunks: list[Chunk], terms: list[str]) -> list[dict[str, str]]:
+    pulled = date.today().isoformat()
+    citations: list[dict[str, str]] = []
+    seen: set[tuple[str, str]] = set()
+    for chunk in chunks:
+        metadata = chunk.document.doc_metadata or {}
+        source_document = str(metadata.get("file_name") or chunk.document.doc_id)
+        source_text = "\n".join(
+            [chunk.text, source_document, *[str(value) for value in metadata.values()]]
+        ).casefold()
+        for term in terms:
+            if term.casefold() not in source_text:
+                continue
+            key = (term, source_document)
+            if key in seen:
+                continue
+            citations.append(
+                {
+                    "source": "PrivateGPT",
+                    "field": term,
+                    "source_document": source_document,
+                    "pulled": pulled,
+                }
+            )
+            seen.add(key)
+    return citations
 
 
 @chat_router.post(
@@ -87,6 +155,9 @@ def chat_completion(
     "finish_reason":null}]}
     ```
     """
+    if _is_d7_grounding_request(body):
+        return _d7_grounding_completion(request, body)
+
     service = request.state.injector.get(ChatService)
     all_messages = [
         ChatMessage(content=m.content, role=MessageRole(m.role)) for m in body.messages
