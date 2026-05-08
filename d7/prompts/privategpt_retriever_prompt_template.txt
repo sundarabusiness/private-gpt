@@ -1,0 +1,7 @@
+Raw JSON payload:
+{entire raw API response here}
+
+Specific question:
+Explain what B01001_001E and B19013_001E mean for buyer appeal on this parcel. Also confirm the exact definition of AADT from the FHWA HPMS dictionary and whether the value meets the 13,000+ Pillar 3 threshold.
+
+Return ONLY grounded excerpts. Cite exact source document and field. No opinions, no summaries, no hallucinations.

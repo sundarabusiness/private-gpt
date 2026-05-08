@@ -564,6 +564,10 @@ class QdrantSettings(BaseModel):
             "Only use this if you can guarantee that you can resolve the thread safety outside QdrantClient."
         ),
     )
+    collection_name: str = Field(
+        "make_this_parameterizable_per_api_call",
+        description="The Qdrant collection name used by PrivateGPT.",
+    )
 
 
 class MilvusSettings(BaseModel):

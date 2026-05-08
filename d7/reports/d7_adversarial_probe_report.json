@@ -1,0 +1,81 @@
+{
+  "checked_at": "2026-05-08T23:10:41.162813+00:00",
+  "scope": "D7 Wash Empire car wash land sniper only",
+  "base_url": "http://127.0.0.1:8000",
+  "required_pass_rate": 0.9,
+  "pass_rate": 1.0,
+  "probe_count": 10,
+  "passed": true,
+  "results": [
+    {
+      "name": "fabricated_census_field",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_hpms_field",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_google_places_field",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_overpass_tag",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_parcel_frontage",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_buyer_quote",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_vic_keller_log",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_threshold",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_acs_suffix",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    },
+    {
+      "name": "fabricated_error_case",
+      "expected_status": "EMPTY",
+      "actual_status": "EMPTY",
+      "passed": true,
+      "empty_reason": "no_source_match"
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "collection": "govt-api-grounding",
+  "scope": "D7 Wash Empire car wash land sniper only",
+  "required_source_groups": [
+    {
+      "name": "Official Census API docs",
+      "required": true,
+      "examples": ["Census API user guide", "ACS API variable documentation"]
+    },
+    {
+      "name": "ACS data dictionary PDFs",
+      "required": true,
+      "examples": ["ACS table/field definitions including B01001_001E and B19013_001E"]
+    },
+    {
+      "name": "FHWA HPMS data dictionary",
+      "required": true,
+      "examples": ["AADT definition and traffic volume field dictionary"]
+    },
+    {
+      "name": "D7 government/API docs",
+      "required": true,
+      "examples": ["Google Places", "OSM Overpass", "parcel/geospatial APIs used by the sniper"]
+    },
+    {
+      "name": "Sample raw JSON responses",
+      "required": true,
+      "examples": ["Past sniper Census, FHWA, Places, OSM, parcel, and scoring payloads"]
+    },
+    {
+      "name": "Sniper run logs and error cases",
+      "required": true,
+      "examples": ["Past D7 run logs", "failed field mappings", "API error cases"]
+    }
+  ]
+}
+

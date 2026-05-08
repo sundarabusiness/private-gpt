@@ -1,0 +1,64 @@
+{
+  "verified_at": "2026-05-08T23:23:14.759323+00:00",
+  "scope": "D7 Wash Empire car wash land sniper only",
+  "endpoint": "http://localhost:8000/v1/chat/completions",
+  "collection": "govt-api-grounding",
+  "checks": [
+    {
+      "name": "exact_mcp_node",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\d7\\mcp\\privategpt_retriever_node.json"
+    },
+    {
+      "name": "exact_prompt_template",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\d7\\prompts\\privategpt_retriever_prompt_template.txt"
+    },
+    {
+      "name": "privategpt_port_8000",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\settings-d7-bitnet.yaml"
+    },
+    {
+      "name": "collection_name",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\settings-d7-bitnet.yaml"
+    },
+    {
+      "name": "ollama_gemma_substitute",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\settings-d7-bitnet.yaml"
+    },
+    {
+      "name": "retriever_default_port_8000",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\scripts\\d7_privategpt_retriever.py"
+    },
+    {
+      "name": "qdrant_collection_parameterized",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\private_gpt\\components\\vector_store\\vector_store_component.py"
+    },
+    {
+      "name": "fabricated_id_empty_guard",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\private_gpt\\server\\d7_retriever\\d7_retriever_router.py"
+    },
+    {
+      "name": "adversarial_probe_harness",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\scripts\\d7_adversarial_probe.py"
+    },
+    {
+      "name": "grounding_source_groups",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\d7\\grounding_sources_manifest.json"
+    },
+    {
+      "name": "adversarial_report_shape",
+      "passed": true,
+      "detail": "C:\\private-gpt-d7\\d7\\reports\\d7_adversarial_probe_report.json"
+    }
+  ],
+  "passed": true
+}

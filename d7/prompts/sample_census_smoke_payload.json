@@ -1,0 +1,11 @@
+{
+  "raw_json_payload": {
+    "source": "Census ACS API sample",
+    "fields": {
+      "B01001_001E": 41237,
+      "B19013_001E": 78450
+    }
+  },
+  "specific_question": "Explain what B01001_001E and B19013_001E mean for buyer appeal on this parcel. Also confirm the exact definition of AADT from the FHWA HPMS dictionary and whether the value meets the 13,000+ Pillar 3 threshold."
+}
+

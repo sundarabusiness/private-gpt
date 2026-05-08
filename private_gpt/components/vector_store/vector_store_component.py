@@ -118,7 +118,9 @@ class VectorStoreComponent:
                     BasePydanticVectorStore,
                     QdrantVectorStore(
                         client=client,
-                        collection_name="make_this_parameterizable_per_api_call",
+                        collection_name=settings.qdrant.collection_name
+                        if settings.qdrant is not None
+                        else "make_this_parameterizable_per_api_call",
                     ),  # TODO
                 )
 

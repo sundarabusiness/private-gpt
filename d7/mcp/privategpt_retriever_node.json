@@ -1,0 +1,14 @@
+{
+  "agent_name": "PrivateGPT_Retriever",
+  "type": "retriever",
+  "backend": "privategpt_local",
+  "endpoint": "http://localhost:8000/v1/chat/completions",
+  "collection": "govt-api-grounding",
+  "temperature": 0.0,
+  "max_tokens": 1024,
+  "system_prompt": "You are a zero-hallucination grounding engine. ONLY return verbatim excerpts from the ingested official API docs, data dictionaries, and past sniper logs. Never invent explanations. Always include the exact field name and source document title.",
+  "input_schema": ["raw_json_payload", "specific_question"],
+  "output_schema": ["grounded_excerpts", "citations"],
+  "next_nodes": ["Main_Reasoning_Agent_5080", "Fact_Checker_BitNet"]
+}
+
