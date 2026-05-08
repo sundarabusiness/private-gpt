@@ -59,6 +59,16 @@ def verify(root: Path) -> dict[str, Any]:
     checks.append(_result("collection_name", "collection_name: govt-api-grounding" in settings, str(settings_path)))
     checks.append(_result("bitnet_openai_base", "BITNET_OPENAI_BASE:http://127.0.0.1:8080/v1" in settings, str(settings_path)))
 
+    retriever_client_path = root / "scripts" / "d7_privategpt_retriever.py"
+    retriever_client = retriever_client_path.read_text(encoding="utf-8")
+    checks.append(
+        _result(
+            "retriever_default_port_8000",
+            'DEFAULT_BASE_URL = "http://127.0.0.1:8000"' in retriever_client,
+            str(retriever_client_path),
+        )
+    )
+
     vector_store_path = root / "private_gpt" / "components" / "vector_store" / "vector_store_component.py"
     vector_store = vector_store_path.read_text(encoding="utf-8")
     checks.append(_result("qdrant_collection_parameterized", "settings.qdrant.collection_name" in vector_store, str(vector_store_path)))
@@ -66,6 +76,19 @@ def verify(root: Path) -> dict[str, Any]:
     route_path = root / "private_gpt" / "server" / "d7_retriever" / "d7_retriever_router.py"
     route = route_path.read_text(encoding="utf-8")
     checks.append(_result("fabricated_id_empty_guard", "status: Literal[\"FOUND\", \"EMPTY\"]" in route and "no_source_match" in route, str(route_path)))
+
+    adversarial_path = root / "scripts" / "d7_adversarial_probe.py"
+    adversarial = adversarial_path.read_text(encoding="utf-8")
+    checks.append(
+        _result(
+            "adversarial_probe_harness",
+            "required_pass_rate: float = 0.9" in adversarial
+            and "SUBSTRATE_ERROR" in adversarial
+            and "B99999_999E" in adversarial
+            and "probe_count" in adversarial,
+            str(adversarial_path),
+        )
+    )
 
     manifest_path = root / "d7" / "grounding_sources_manifest.json"
     manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
@@ -75,6 +98,18 @@ def verify(root: Path) -> dict[str, Any]:
             manifest.get("collection") == "govt-api-grounding"
             and len(manifest.get("required_source_groups", [])) == 6,
             str(manifest_path),
+        )
+    )
+
+    adversarial_report_path = root / "d7" / "reports" / "d7_adversarial_probe_report.json"
+    adversarial_report = json.loads(adversarial_report_path.read_text(encoding="utf-8"))
+    checks.append(
+        _result(
+            "adversarial_report_shape",
+            adversarial_report.get("required_pass_rate") == 0.9
+            and adversarial_report.get("probe_count") == 10
+            and "passed" in adversarial_report,
+            str(adversarial_report_path),
         )
     )
 
@@ -108,4 +143,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

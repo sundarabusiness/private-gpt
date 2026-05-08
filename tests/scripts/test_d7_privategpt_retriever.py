@@ -28,3 +28,6 @@ def test_retriever_client_fails_closed_on_network_failure(
             MODULE.RetrieverRequest(query="B12345_001A", parcel_id="B12345_001A"),
         )
 
+
+def test_retriever_client_default_base_url_is_privategpt_port() -> None:
+    assert MODULE.DEFAULT_BASE_URL == "http://127.0.0.1:8000"

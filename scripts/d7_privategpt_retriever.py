@@ -9,6 +9,8 @@ from typing import Any
 
 import requests
 
+DEFAULT_BASE_URL = "http://127.0.0.1:8000"
+
 
 class PrivateGptSubstrateError(RuntimeError):
     """Raised when PrivateGPT cannot be trusted as an available substrate."""
@@ -58,7 +60,7 @@ def retrieve(
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--base-url", default="http://127.0.0.1:8001")
+    parser.add_argument("--base-url", default=DEFAULT_BASE_URL)
     parser.add_argument("--query", required=True)
     parser.add_argument("--parcel-id")
     parser.add_argument("--required-term", action="append", default=[])
@@ -91,4 +93,3 @@ def main() -> int:
 
 if __name__ == "__main__":
     sys.exit(main())
-

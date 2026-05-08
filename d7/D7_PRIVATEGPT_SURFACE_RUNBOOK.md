@@ -103,12 +103,23 @@ Before the live substrate is available, the repo contract can still be checked:
 
 ```powershell
 cd C:\tmp\private-gpt
-py -3.12 scripts\d7_verify_contract.py
+py -3.11 scripts\d7_verify_contract.py
 ```
 
 The report is written to:
 
 `d7\reports\d7_privategpt_contract_report.json`
+
+## Adversarial Probe Gate
+
+Run the adversarial probe after PrivateGPT is live and ingestion is complete:
+
+```powershell
+cd C:\tmp\private-gpt
+poetry run python scripts\d7_adversarial_probe.py --base-url http://127.0.0.1:8000 --required-pass-rate 0.9
+```
+
+This gate sends 10 fabricated D7/Census/FHWA/API/log probes and requires at least a 90% EMPTY rate. If PrivateGPT is unreachable, it writes `SUBSTRATE_ERROR` and exits non-zero.
 
 ## MCP Node
 

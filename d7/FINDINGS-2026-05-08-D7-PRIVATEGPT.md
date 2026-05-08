@@ -20,6 +20,7 @@ Fork and branch are prepared for D7 Wash Empire car wash land sniper grounding, 
 - Added offline contract verifier for exact MCP node, prompt, endpoint, collection, and source manifest.
 - Added offline contract report at `d7/reports/d7_privategpt_contract_report.json`.
 - Added ARM Surface preflight checker for Python 3.11, dependency manager, BitNet, PrivateGPT, ports, and ingest folder.
+- Added adversarial probe runner for 10 fabricated D7/Census/FHWA/API/log probes with a 90% pass-rate gate.
 
 ## Not Live Yet
 
@@ -39,6 +40,7 @@ This machine cannot honestly confirm live service or loaded collection yet:
 - Script-only pytest passed before dependency install: `2 passed`.
 - D7 ingest runner returned `MISSING_INGEST_DIR` for `C:\wash-empire\privategpt-ingest`.
 - D7 sample Census smoke returned `SUBSTRATE_ERROR` because `http://127.0.0.1:8000/v1/chat/completions` is not listening.
+- D7 adversarial runner returned `SUBSTRATE_ERROR` before probe scoring because `http://127.0.0.1:8000/v1/d7/privategpt_retriever` is not listening.
 - Surface preflight report documents remaining live-runtime blockers at `d7/reports/d7_surface_preflight_report.json`.
 - Focused D7 pytest passed in the installed Python 3.11 `uv` environment: `5 passed`.
 
@@ -50,6 +52,7 @@ This machine cannot honestly confirm live service or loaded collection yet:
 4. Start PrivateGPT with `settings-d7-bitnet.yaml` and `PORT=8000`.
 5. Run `scripts\d7_ingest_govt_api_grounding.py`.
 6. Run `scripts\d7_privategpt_smoke.py`.
+7. Run `scripts\d7_adversarial_probe.py` and require pass rate >= 0.90.
 
 ## Expected Final Endpoint
 

@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-05-08T11:02:37.827191+00:00",
+  "verified_at": "2026-05-08T11:09:49.280956+00:00",
   "scope": "D7 Wash Empire car wash land sniper only",
   "endpoint": "http://localhost:8000/v1/chat/completions",
   "collection": "govt-api-grounding",
@@ -30,6 +30,11 @@
       "detail": "C:\\tmp\\private-gpt\\settings-d7-bitnet.yaml"
     },
     {
+      "name": "retriever_default_port_8000",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\scripts\\d7_privategpt_retriever.py"
+    },
+    {
       "name": "qdrant_collection_parameterized",
       "passed": true,
       "detail": "C:\\tmp\\private-gpt\\private_gpt\\components\\vector_store\\vector_store_component.py"
@@ -40,9 +45,19 @@
       "detail": "C:\\tmp\\private-gpt\\private_gpt\\server\\d7_retriever\\d7_retriever_router.py"
     },
     {
+      "name": "adversarial_probe_harness",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\scripts\\d7_adversarial_probe.py"
+    },
+    {
       "name": "grounding_source_groups",
       "passed": true,
       "detail": "C:\\tmp\\private-gpt\\d7\\grounding_sources_manifest.json"
+    },
+    {
+      "name": "adversarial_report_shape",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\d7\\reports\\d7_adversarial_probe_report.json"
     }
   ],
   "passed": true
