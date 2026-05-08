@@ -20,10 +20,15 @@ PrivateGPT is configured in `settings-d7-bitnet.yaml` to call a local OpenAI-com
 On ARM Surfaces, build/run Microsoft's BitNet server so it exposes `/v1/chat/completions`:
 
 ```powershell
-git clone https://github.com/microsoft/BitNet C:\BitNet
+# Run from a VS2022 Developer PowerShell with CMake + Clang available.
+git clone --recursive https://github.com/microsoft/BitNet C:\BitNet
 cd C:\BitNet
-# Follow microsoft/BitNet setup for the ARM Surface.
-# After build, run llama-server on 127.0.0.1:8080 with the BitNet GGUF model.
+conda create -n bitnet-cpp python=3.9
+conda activate bitnet-cpp
+pip install -r requirements.txt
+huggingface-cli download microsoft/BitNet-b1.58-2B-4T-gguf --local-dir models/BitNet-b1.58-2B-4T
+python setup_env.py -md models/BitNet-b1.58-2B-4T -q i2_s
+python run_inference_server.py -m models/BitNet-b1.58-2B-4T/ggml-model-i2_s.gguf --host 127.0.0.1 --port 8080 -c 4096 -n 1024 --temperature 0.0
 ```
 
 The expected BitNet server shape is OpenAI-compatible. PrivateGPT then exposes the D7 RAG endpoint on port 8000.
