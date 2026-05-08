@@ -1,0 +1,45 @@
+{
+  "checked_at": "2026-05-08T10:44:17.760098+00:00",
+  "scope": "D7 Wash Empire car wash land sniper only",
+  "bitnet_base": "http://127.0.0.1:8080/v1",
+  "privategpt_base": "http://127.0.0.1:8000",
+  "ingest_dir": "C:\\wash-empire\\privategpt-ingest",
+  "checks": [
+    {
+      "name": "python_3_11",
+      "passed": false,
+      "detail": "No suitable Python runtime found\nPass --list (-0) to see all detected environments on your machine\nor set environment variable PYLAUNCHER_ALLOW_INSTALL to use winget\nor open the Microsoft Store to the requested version."
+    },
+    {
+      "name": "poetry",
+      "passed": false,
+      "detail": "[WinError 2] The system cannot find the file specified"
+    },
+    {
+      "name": "bitnet_openai_models",
+      "passed": false,
+      "detail": "http://127.0.0.1:8080/v1/models -> <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "name": "privategpt_health",
+      "passed": false,
+      "detail": "http://127.0.0.1:8000/health -> <urlopen error [WinError 10061] No connection could be made because the target machine actively refused it>"
+    },
+    {
+      "name": "port_8080_open",
+      "passed": false,
+      "detail": "BitNet server"
+    },
+    {
+      "name": "port_8000_open",
+      "passed": false,
+      "detail": "PrivateGPT server"
+    },
+    {
+      "name": "ingest_dir",
+      "passed": false,
+      "detail": "C:\\wash-empire\\privategpt-ingest does not exist"
+    }
+  ],
+  "passed": false
+}

@@ -32,6 +32,17 @@ The expected BitNet server shape is OpenAI-compatible. PrivateGPT then exposes t
 
 Use a Python runtime compatible with upstream PrivateGPT (`>=3.11,<3.12`) and Poetry.
 
+Run the preflight first:
+
+```powershell
+cd C:\tmp\private-gpt
+py -3.12 scripts\d7_surface_preflight.py
+```
+
+The report is written to:
+
+`d7\reports\d7_surface_preflight_report.json`
+
 ```powershell
 cd C:\tmp\private-gpt
 poetry install --extras "llms-openai-like embeddings-huggingface vector-stores-qdrant"

@@ -1,5 +1,5 @@
 {
-  "verified_at": "2026-05-08T10:39:17.931499+00:00",
+  "verified_at": "2026-05-08T10:44:36.679765+00:00",
   "scope": "D7 Wash Empire car wash land sniper only",
   "endpoint": "http://localhost:8000/v1/chat/completions",
   "collection": "govt-api-grounding",

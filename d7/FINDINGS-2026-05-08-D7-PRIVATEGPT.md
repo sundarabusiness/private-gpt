@@ -19,6 +19,7 @@ Fork and branch are prepared for D7 Wash Empire car wash land sniper grounding, 
 - Added a D7-specific source-match retriever route and tests to fail empty on unsupported parcel IDs.
 - Added offline contract verifier for exact MCP node, prompt, endpoint, collection, and source manifest.
 - Added offline contract report at `d7/reports/d7_privategpt_contract_report.json`.
+- Added ARM Surface preflight checker for Python 3.11, Poetry, BitNet, PrivateGPT, ports, and ingest folder.
 
 ## Not Live Yet
 
@@ -38,6 +39,7 @@ This machine cannot honestly confirm live service or loaded collection yet:
 - Script-only pytest passed: `2 passed`.
 - D7 ingest runner returned `MISSING_INGEST_DIR` for `C:\wash-empire\privategpt-ingest`.
 - D7 sample Census smoke returned `SUBSTRATE_ERROR` because `http://127.0.0.1:8000/v1/chat/completions` is not listening.
+- Surface preflight report documents the same live-runtime blockers at `d7/reports/d7_surface_preflight_report.json`.
 - Focused pytest could not start because upstream PrivateGPT dependencies are not installed locally: `ModuleNotFoundError: No module named 'injector'`.
 
 ## Required Morning Actions
