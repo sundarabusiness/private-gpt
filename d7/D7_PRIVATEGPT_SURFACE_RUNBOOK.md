@@ -61,6 +61,19 @@ The manifest is written to:
 
 `local_data/d7_privategpt/govt-api-grounding-manifest.json`
 
+## Offline Contract Check
+
+Before the live substrate is available, the repo contract can still be checked:
+
+```powershell
+cd C:\tmp\private-gpt
+py -3.12 scripts\d7_verify_contract.py
+```
+
+The report is written to:
+
+`d7\reports\d7_privategpt_contract_report.json`
+
 ## MCP Node
 
 Copy `d7/mcp/privategpt_retriever_node.json` into the MCP graph. It is the exact Bobby-approved node.
@@ -77,4 +90,3 @@ Expected behavior:
 - Endpoint responds at `http://localhost:8000/v1/chat/completions`.
 - Response cites only ingested source excerpts.
 - If the source is missing, the response says the answer is not in context or returns empty evidence.
-

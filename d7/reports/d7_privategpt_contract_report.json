@@ -1,0 +1,49 @@
+{
+  "verified_at": "2026-05-08T10:39:17.931499+00:00",
+  "scope": "D7 Wash Empire car wash land sniper only",
+  "endpoint": "http://localhost:8000/v1/chat/completions",
+  "collection": "govt-api-grounding",
+  "checks": [
+    {
+      "name": "exact_mcp_node",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\d7\\mcp\\privategpt_retriever_node.json"
+    },
+    {
+      "name": "exact_prompt_template",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\d7\\prompts\\privategpt_retriever_prompt_template.txt"
+    },
+    {
+      "name": "privategpt_port_8000",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\settings-d7-bitnet.yaml"
+    },
+    {
+      "name": "collection_name",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\settings-d7-bitnet.yaml"
+    },
+    {
+      "name": "bitnet_openai_base",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\settings-d7-bitnet.yaml"
+    },
+    {
+      "name": "qdrant_collection_parameterized",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\private_gpt\\components\\vector_store\\vector_store_component.py"
+    },
+    {
+      "name": "fabricated_id_empty_guard",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\private_gpt\\server\\d7_retriever\\d7_retriever_router.py"
+    },
+    {
+      "name": "grounding_source_groups",
+      "passed": true,
+      "detail": "C:\\tmp\\private-gpt\\d7\\grounding_sources_manifest.json"
+    }
+  ],
+  "passed": true
+}
